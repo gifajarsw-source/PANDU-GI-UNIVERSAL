@@ -149,7 +149,7 @@
             </div>
 
             <div class="menu-card menu-full" onclick="openSection('section-data')">
-                <div class="menu-icon-box ic-gray" style="margin-bottom:0;"><svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="3"></circle><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 0 2.83l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"></path></svg></div>
+                <div class="menu-icon-box ic-gray" style="margin-bottom:0;"><svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="3"></circle><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"></path></svg></div>
                 <div class="menu-text"><div class="menu-title" style="margin:0">Backup & Reset</div><div class="menu-desc">Export / Import Database</div></div>
             </div>
         </div>
@@ -273,7 +273,7 @@ function openSection(id) {
     if(id === 'section-asset') renderAsset(); // New Render Function
 }
 
-// --- 1. ALARM LOGIC ---
+// --- 1. ALARM LOGIC (FIXED: NOW SHOWS 'PENYEBAB') ---
 function renderAlarm() {
     const list = document.getElementById('list-alarm');
     const key = document.getElementById('search-alarm').value.toLowerCase();
@@ -292,6 +292,9 @@ function renderAlarm() {
                 <div class="badge">${item.s}</div>
                 <div class="card-title" onclick="editAlarm(${realIdx})">${item.a}</div>
                 <div class="card-label">Indikasi:</div><div class="card-desc">${item.m}</div>
+                
+                <div class="card-label">Penyebab:</div><div class="card-desc">${item.p || '-'}</div>
+                
                 <div class="card-label">Tindakan:</div><div class="card-desc">${item.t}</div>
             </div>`;
     });
@@ -397,14 +400,26 @@ function renderFile(storeName, listId, delFunc) {
     }, 500);
 }
 
+// --- FIX BUKA FILE (ANTI POPUP DOWNLOAD LAGI) ---
 function openFile(storeName, id) {
     const tx = idb.transaction(storeName, "readonly");
     const req = tx.objectStore(storeName).get(id);
     req.onsuccess = e => {
         const file = e.target.result;
+        
+        // TRIK: Buat Object URL baru setiap kali diklik
         const fileURL = URL.createObjectURL(file.blob);
+        
+        // Membuka di tab baru (Target _blank) memaksa Android membuka Viewer
+        // Ini akan tetap mendownload file temp, TAPI tidak akan bertanya "Download Again?"
         const win = window.open(fileURL, '_blank');
-        if (win) win.focus();
+        if (win) {
+            win.focus();
+        } else {
+            window.location.href = fileURL;
+        }
+        
+        // Bersihkan memori
         setTimeout(() => URL.revokeObjectURL(fileURL), 60000);
     };
 }
