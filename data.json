@@ -1,0 +1,495 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>PANDU-GI | Pro</title>
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --primary: #2563eb;       
+            --primary-dark: #1e40af;
+            --bg: #f8fafc;            
+            --surface: #ffffff;       
+            --text-main: #0f172a;     
+            --text-sub: #64748b;      
+            --danger: #ef4444;        
+            --success: #10b981;       
+            --purple: #8b5cf6;        
+            --border: #e2e8f0;        
+            --shadow: 0 4px 6px -1px rgba(0,0,0,0.05);
+        }
+
+        * { box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
+        body { font-family: 'Plus Jakarta Sans', sans-serif; background-color: var(--bg); color: var(--text-main); margin: 0; padding-bottom: 40px; }
+
+        /* HEADER */
+        .header { background: var(--surface); padding: 15px 20px; position: sticky; top: 0; z-index: 100; display: flex; align-items: center; justify-content: space-between; box-shadow: 0 1px 3px rgba(0,0,0,0.05); border-bottom: 1px solid var(--border); }
+        .app-brand { font-weight: 800; font-size: 18px; color: var(--primary); display: flex; align-items: center; gap: 10px; }
+        .gi-badge { font-size: 10px; background: #eff6ff; color: var(--primary); padding: 4px 8px; border-radius: 6px; font-weight: 700; text-transform: uppercase; border: 1px solid #dbeafe; letter-spacing: 0.5px; }
+        .btn-back { display: none; background: #f1f5f9; border: none; padding: 8px 12px; border-radius: 8px; font-weight: 600; font-size: 12px; color: var(--text-sub); }
+
+        .container { max-width: 600px; margin: 0 auto; padding: 20px; min-height: 85vh; }
+
+        /* SETUP SCREEN */
+        #setup-screen { display: none; text-align: center; padding-top: 40px; animation: fadeUp 0.5s ease; }
+        .setup-icon { width: 80px; height: 80px; background: #eff6ff; color: var(--primary); border-radius: 50%; display: flex; align-items: center; justify-content: center; margin: 0 auto 20px; }
+        
+        /* MENU GRID */
+        .menu-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 15px; margin-top: 15px; animation: fadeUp 0.4s ease; }
+        .menu-card { background: var(--surface); border-radius: 16px; padding: 25px 15px; display: flex; flex-direction: column; align-items: center; text-align: center; box-shadow: var(--shadow); border: 1px solid var(--border); cursor: pointer; transition: transform 0.1s; position: relative; overflow: hidden; }
+        .menu-card:active { transform: scale(0.97); background: #f1f5f9; }
+        
+        .menu-icon-box { width: 54px; height: 54px; border-radius: 14px; display: flex; align-items: center; justify-content: center; margin-bottom: 12px; font-size: 26px; }
+        .ic-blue { background: #eff6ff; color: #2563eb; } .ic-green { background: #ecfdf5; color: #10b981; }
+        .ic-orange { background: #fff7ed; color: #f97316; } .ic-purple { background: #f5f3ff; color: #8b5cf6; }
+        .ic-gray { background: #f8fafc; color: #475569; }
+
+        .menu-full { grid-column: 1 / -1; flex-direction: row; justify-content: flex-start; padding: 20px; gap: 15px; }
+        .menu-full .menu-icon-box { margin-bottom: 0; width: 40px; height: 40px; font-size: 20px; } 
+        .menu-full .menu-text { text-align: left; }
+        
+        .menu-title { font-weight: 700; font-size: 14px; margin-bottom: 2px; color: var(--text-main); }
+        .menu-desc { font-size: 11px; color: var(--text-sub); }
+
+        /* CONTENT */
+        .app-section { display: none; animation: slideIn 0.3s cubic-bezier(0.16, 1, 0.3, 1); }
+        .app-section.active { display: block; }
+
+        .card { background: var(--surface); border-radius: 12px; padding: 16px; margin-bottom: 12px; box-shadow: var(--shadow); border: 1px solid var(--border); position: relative; }
+        .card.trip-alarm { border-left: 5px solid var(--danger); }
+        
+        .badge { display: inline-block; padding: 4px 10px; border-radius: 20px; font-size: 11px; font-weight: 700; background: #eff6ff; color: var(--primary); margin-bottom: 8px; }
+        .card-title { font-size: 15px; font-weight: 700; margin: 0 0 6px 0; color: var(--text-main); }
+        .card-desc { font-size: 13px; color: var(--text-sub); margin: 0; line-height: 1.5; margin-bottom: 6px; }
+
+        /* BUTTONS */
+        .btn { border: none; padding: 12px; border-radius: 10px; font-size: 13px; font-weight: 600; cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 6px; width: 100%; transition: 0.2s; margin-bottom: 10px; }
+        .btn-primary { background: var(--primary); color: white; }
+        .btn-secondary { background: #f1f5f9; color: var(--text-main); border: 1px solid #cbd5e1; }
+        .btn-danger { background: #fee2e2; color: var(--danger); }
+        .btn-success { background: var(--success); color: white; }
+        .btn-purple { background: var(--purple); color: white; }
+        
+        .delete-btn { position: absolute; top: 12px; right: 12px; background: none; border: none; color: #cbd5e1; width: 24px; height: 24px; display: flex; align-items: center; justify-content: center; cursor: pointer; font-size: 16px; }
+        .delete-btn:hover { color: var(--danger); background: #fef2f2; border-radius: 50%; }
+
+        input, textarea, select { width: 100%; padding: 12px; border: 1px solid var(--border); border-radius: 8px; font-family: inherit; margin-bottom: 10px; font-size: 14px; background: #fff; }
+        .search-bar { position: sticky; top: 75px; z-index: 90; box-shadow: var(--shadow); border: 1px solid var(--primary); }
+        
+        /* MODAL */
+        .overlay { position: fixed; top: 0; left: 0; right: 0; bottom: 0; background: rgba(0,0,0,0.6); backdrop-filter: blur(2px); z-index: 1000; display: none; align-items: center; justify-content: center; padding: 20px; }
+        .modal { background: white; width: 100%; max-width: 450px; border-radius: 20px; padding: 24px; max-height: 85vh; overflow-y: auto; animation: slideUp 0.3s ease; }
+        
+        #loader { position: fixed; top:0; left:0; right:0; bottom:0; background: rgba(0,0,0,0.8); z-index: 2000; display: none; flex-direction: column; align-items: center; justify-content: center; color: white; }
+        .spinner { width: 40px; height: 40px; border: 4px solid rgba(255,255,255,0.3); border-top-color: white; border-radius: 50%; animation: spin 1s linear infinite; margin-bottom: 15px; }
+        .empty-state { text-align: center; color: var(--text-sub); margin-top: 40px; }
+
+        @keyframes fadeUp { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+        @keyframes slideIn { from { opacity: 0; transform: scale(0.98); } to { opacity: 1; transform: scale(1); } }
+        @keyframes slideUp { from { transform: translateY(50px); opacity: 0; } to { transform: translateY(0); opacity: 1; } }
+        @keyframes spin { to { transform: rotate(360deg); } }
+    </style>
+</head>
+<body>
+
+<div class="header">
+    <div class="app-brand">
+        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M12 20a8 8 0 1 0 0-16 8 8 0 0 0 0 16Z"/><path d="M12 14a2 2 0 1 0 0-4 2 2 0 0 0 0 4Z"/><path d="M12 2v2"/><path d="M12 22v-2"/><path d="M2 12h2"/><path d="M22 12h-2"/></svg>
+        PANDU-GI <span id="header-gi-name" class="gi-badge">APP</span>
+    </div>
+    <button id="btn-back" class="btn-back" onclick="goHome()">Menu</button>
+</div>
+
+<div class="container">
+
+    <div id="setup-screen">
+        <div class="setup-icon">
+            <svg xmlns="http://www.w3.org/2000/svg" width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path><circle cx="12" cy="7" r="4"></circle></svg>
+        </div>
+        <h2 style="margin-bottom: 10px;">Selamat Datang!</h2>
+        <p style="color:var(--text-sub); margin-bottom: 30px;">Aplikasi kosong. Silakan beri nama Gardu Induk Anda.</p>
+        
+        <div class="card">
+            <h3 class="card-title">Nama Gardu Induk</h3>
+            <input type="text" id="setup-gi-name" placeholder="Contoh: GI Cawang">
+            <button class="btn btn-primary" onclick="finishSetup()">🚀 Mulai</button>
+        </div>
+        
+        <p style="margin-top:20px; font-size:12px; color:#94a3b8">Atau Import Data:</p>
+        <button class="btn btn-secondary" onclick="document.getElementById('import-file-setup').click()">📂 Upload File JSON</button>
+        <input type="file" id="import-file-setup" accept=".json" style="display:none" onchange="importData(this)">
+    </div>
+
+    <div id="main-menu" style="display:none;">
+        <div style="margin-bottom: 20px;">
+            <h2 style="margin: 0; font-size: 20px;">Mode Operasi</h2>
+            <p style="margin: 4px 0 0 0; color: var(--text-sub); font-size: 13px;">Unit: <b id="gi-name-display">...</b></p>
+        </div>
+
+        <div class="menu-grid">
+            <div class="menu-card" onclick="openSection('section-alarm')">
+                <div class="menu-icon-box ic-blue"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"></path><path d="M13.73 21a2 2 0 0 1-3.46 0"></path></svg></div>
+                <div class="menu-title">Cari Alarm</div><div class="menu-desc">Database Annunciator</div>
+            </div>
+
+            <div class="menu-card" onclick="openSection('section-asset')">
+                <div class="menu-icon-box ic-purple"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="2" y="3" width="20" height="14" rx="2" ry="2"></rect><line x1="8" y1="21" x2="16" y2="21"></line><line x1="12" y1="17" x2="12" y2="21"></line></svg></div>
+                <div class="menu-title">Data Peralatan</div><div class="menu-desc">Datasheet / Gambar PDF</div>
+            </div>
+
+            <div class="menu-card" onclick="openSection('section-sop')">
+                <div class="menu-icon-box ic-green"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path><polyline points="14 2 14 8 20 8"></polyline><line x1="16" y1="13" x2="8" y2="13"></line><line x1="16" y1="17" x2="8" y2="17"></line><polyline points="10 9 9 9 8 9"></polyline></svg></div>
+                <div class="menu-title">SOP</div><div class="menu-desc">Manual Book PDF</div>
+            </div>
+
+            <div class="menu-card" onclick="openSection('section-contact')">
+                <div class="menu-icon-box ic-orange"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z"></path></svg></div>
+                <div class="menu-title">Kontak</div><div class="menu-desc">Nomor Darurat</div>
+            </div>
+
+            <div class="menu-card menu-full" onclick="openSection('section-data')">
+                <div class="menu-icon-box ic-gray" style="margin-bottom:0;"><svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="3"></circle><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"></path></svg></div>
+                <div class="menu-text"><div class="menu-title" style="margin:0">Backup & Reset</div><div class="menu-desc">Export / Import Database</div></div>
+            </div>
+        </div>
+    </div>
+
+    <div id="section-alarm" class="app-section">
+        <input type="text" id="search-alarm" class="search-bar" placeholder="Ketik unit atau nama alarm..." oninput="renderAlarm()">
+        <button class="btn btn-primary" onclick="openModal('modal-alarm')">+ Input Alarm Baru</button>
+        <div id="list-alarm"></div>
+    </div>
+
+    <div id="section-asset" class="app-section">
+        <div class="card" style="border-top: 4px solid var(--purple);">
+            <h3 class="card-title">Upload Dokumen Asset</h3>
+            <p class="card-desc">Simpan Datasheet, Gambar Teknik, atau Manual Peralatan (PDF).</p>
+            <input type="text" id="asset-name" placeholder="Judul (Misal: Datasheet Trafo 1)">
+            <input type="file" id="asset-file" accept="application/pdf">
+            <button class="btn btn-purple" onclick="saveAsset()">Simpan Dokumen Asset</button>
+        </div>
+        <div id="list-asset"></div>
+    </div>
+
+    <div id="section-sop" class="app-section">
+        <div class="card" style="border-top: 4px solid var(--success);">
+            <h3 class="card-title">Upload SOP Baru</h3>
+            <p class="card-desc">Simpan prosedur operasional (PDF).</p>
+            <input type="text" id="sop-name" placeholder="Judul Dokumen">
+            <input type="file" id="sop-file" accept="application/pdf">
+            <button class="btn btn-success" onclick="saveSOP()">Simpan SOP</button>
+        </div>
+        <div id="list-sop"></div>
+    </div>
+
+    <div id="section-contact" class="app-section">
+        <button class="btn btn-primary" onclick="openModal('modal-contact')">+ Tambah Kontak</button>
+        <div id="list-contact"></div>
+    </div>
+
+    <div id="section-data" class="app-section">
+        <div class="card">
+            <h3 class="card-title">Identitas Unit</h3>
+            <input type="text" id="in-gi-name" onchange="saveGIName()" placeholder="Nama GI">
+        </div>
+        <div class="card">
+            <h3 class="card-title">Backup Text Data</h3>
+            <p class="card-desc">Simpan data Alarm & Kontak ke file JSON. <br><small>*(File PDF Asset/SOP tidak ikut ter-backup di sini karena ukuran file)*</small></p>
+            <button class="btn btn-primary" onclick="exportData()">⬇️ Download Database</button>
+        </div>
+        <div class="card">
+            <h3 class="card-title">Restore Data</h3>
+            <input type="file" id="import-file" accept=".json">
+            <button class="btn btn-secondary" onclick="importData(document.getElementById('import-file'))">📂 Upload File JSON</button>
+        </div>
+        <div class="card" style="background:#fff1f2; border-color:#fecdd3; margin-top:20px;">
+            <button class="btn btn-danger" onclick="resetApp()">⚠️ Reset Aplikasi</button>
+        </div>
+    </div>
+
+</div>
+
+<div id="modal-alarm" class="overlay"><div class="modal"><h3 style="margin-top:0">Data Alarm</h3><input type="hidden" id="alarm-idx"><input type="text" id="alarm-unit" placeholder="Unit (Misal: Trafo 1)"><input type="text" id="alarm-name" placeholder="Nama Alarm"><textarea id="alarm-ind" rows="2" placeholder="Indikasi"></textarea><textarea id="alarm-cause" rows="2" placeholder="Penyebab"></textarea><textarea id="alarm-action" rows="2" placeholder="Tindakan"></textarea><div style="display:flex;gap:10px"><button class="btn btn-primary" onclick="saveAlarmItem()">Simpan</button><button class="btn btn-secondary" onclick="closeModal('modal-alarm')">Batal</button></div></div></div>
+<div id="modal-contact" class="overlay"><div class="modal"><h3 style="margin-top:0">Data Kontak</h3><input type="hidden" id="contact-idx"><input type="text" id="contact-name" placeholder="Nama"><input type="number" id="contact-num" placeholder="Nomor Telepon"><div style="display:flex;gap:10px"><button class="btn btn-primary" onclick="saveContactItem()">Simpan</button><button class="btn btn-secondary" onclick="closeModal('modal-contact')">Batal</button></div></div></div>
+
+<div id="loader"><div class="spinner"></div><div id="loader-text">Memproses...</div></div>
+
+<script>
+// --- INITIAL STATE ---
+let db = { giName: "", alarms: [], contacts: [] }; // Assets removed from JSON DB (handled by IndexedDB)
+
+// Check Local Storage
+const saved = localStorage.getItem('pandu_db_final');
+if(saved) {
+    db = JSON.parse(saved);
+    if(db.giName) showMenu(); else document.getElementById('setup-screen').style.display = 'block';
+} else {
+    document.getElementById('setup-screen').style.display = 'block';
+}
+
+// --- SETUP FUNCTIONS ---
+function finishSetup() {
+    const name = document.getElementById('setup-gi-name').value;
+    if(!name) return alert("Isi nama Gardu Induk!");
+    db.giName = name;
+    saveData();
+    showMenu();
+}
+
+function showMenu() {
+    document.getElementById('setup-screen').style.display = 'none';
+    document.getElementById('main-menu').style.display = 'block';
+    document.querySelector('.header').style.display = 'flex';
+    updateHeader();
+}
+
+function saveData() {
+    localStorage.setItem('pandu_db_final', JSON.stringify(db));
+    updateHeader();
+}
+
+function updateHeader() {
+    const name = db.giName || "MANUAL";
+    document.getElementById('header-gi-name').innerText = name;
+    document.getElementById('gi-name-display').innerText = name;
+    document.getElementById('in-gi-name').value = db.giName;
+}
+
+// --- NAVIGATION ---
+function goHome() {
+    document.querySelectorAll('.app-section').forEach(el => el.classList.remove('active'));
+    document.getElementById('main-menu').style.display = 'block';
+    document.getElementById('btn-back').style.display = 'none';
+}
+
+function openSection(id) {
+    document.getElementById('main-menu').style.display = 'none';
+    document.getElementById(id).classList.add('active');
+    document.getElementById('btn-back').style.display = 'block';
+    if(id === 'section-alarm') renderAlarm();
+    if(id === 'section-contact') renderContact();
+    if(id === 'section-sop') renderSOP();
+    if(id === 'section-asset') renderAsset(); // New Render Function
+}
+
+// --- 1. ALARM LOGIC (FIXED: NOW SHOWS 'PENYEBAB') ---
+function renderAlarm() {
+    const list = document.getElementById('list-alarm');
+    const key = document.getElementById('search-alarm').value.toLowerCase();
+    list.innerHTML = "";
+    if (db.alarms.length === 0) return list.innerHTML = "<div class='empty-state'>Belum ada data alarm.</div>";
+
+    const filtered = db.alarms.filter(x => x.s.toLowerCase().includes(key) || x.a.toLowerCase().includes(key));
+    if (filtered.length === 0) return list.innerHTML = "<div class='empty-state'>Tidak ditemukan.</div>";
+
+    filtered.forEach((item) => {
+        const realIdx = db.alarms.indexOf(item);
+        const isTrip = (item.a + item.m).toLowerCase().includes('trip');
+        list.innerHTML += `
+            <div class="card ${isTrip ? 'trip-alarm' : ''}">
+                <button class="delete-btn" onclick="delAlarm(${realIdx})">✕</button>
+                <div class="badge">${item.s}</div>
+                <div class="card-title" onclick="editAlarm(${realIdx})">${item.a}</div>
+                <div class="card-label">Indikasi:</div><div class="card-desc">${item.m}</div>
+                
+                <div class="card-label">Penyebab:</div><div class="card-desc">${item.p || '-'}</div>
+                
+                <div class="card-label">Tindakan:</div><div class="card-desc">${item.t}</div>
+            </div>`;
+    });
+}
+function saveAlarmItem() {
+    const item = { s: document.getElementById('alarm-unit').value, a: document.getElementById('alarm-name').value, m: document.getElementById('alarm-ind').value, p: document.getElementById('alarm-cause').value, t: document.getElementById('alarm-action').value };
+    if(!item.s || !item.a) return alert("Lengkapi data!");
+    const idx = document.getElementById('alarm-idx').value;
+    if(idx === "") db.alarms.unshift(item); else db.alarms[idx] = item;
+    saveData(); closeModal('modal-alarm'); renderAlarm();
+}
+function editAlarm(i) {
+    const item = db.alarms[i];
+    document.getElementById('alarm-idx').value = i;
+    document.getElementById('alarm-unit').value = item.s;
+    document.getElementById('alarm-name').value = item.a;
+    document.getElementById('alarm-ind').value = item.m;
+    document.getElementById('alarm-cause').value = item.p;
+    document.getElementById('alarm-action').value = item.t;
+    openModal('modal-alarm');
+}
+function delAlarm(i) { if(confirm("Hapus alarm?")) { db.alarms.splice(i, 1); saveData(); renderAlarm(); } }
+
+// --- 2. KONTAK LOGIC ---
+function renderContact() {
+    const list = document.getElementById('list-contact');
+    list.innerHTML = "";
+    db.contacts.forEach((item, i) => {
+        list.innerHTML += `<div class="card" style="display:flex; justify-content:space-between; align-items:center"><div><div class="card-title" style="margin:0">${item.name}</div><a href="tel:${item.no}" style="color:var(--primary); font-weight:700; text-decoration:none">${item.no}</a></div><button class="delete-btn" style="position:static" onclick="delContact(${i})">✕</button></div>`;
+    });
+}
+function saveContactItem() {
+    const item = { name: document.getElementById('contact-name').value, no: document.getElementById('contact-num').value };
+    if(!item.name) return;
+    const idx = document.getElementById('contact-idx').value;
+    if(idx === "") db.contacts.push(item); else db.contacts[idx] = item;
+    saveData(); closeModal('modal-contact'); renderContact();
+}
+function delContact(i) { if(confirm("Hapus?")) { db.contacts.splice(i, 1); saveData(); renderContact(); } }
+
+// --- 3. FILE SYSTEM (SOP & ASSETS) ---
+// Kita gunakan IndexedDB untuk menyimpan file (SOP & Asset)
+let idb;
+const request = indexedDB.open("PanduGI_Final", 1); 
+
+request.onupgradeneeded = e => {
+    const db = e.target.result;
+    // Store untuk SOP
+    if (!db.objectStoreNames.contains('sops')) db.createObjectStore("sops", { keyPath: "id", autoIncrement: true });
+    // Store untuk ASSET (Baru)
+    if (!db.objectStoreNames.contains('assets')) db.createObjectStore("assets", { keyPath: "id", autoIncrement: true });
+};
+request.onsuccess = e => { idb = e.target.result; };
+
+// --- FUNGSI GENERIK UNTUK FILE ---
+function saveFile(storeName, nameId, fileId, renderFunc) {
+    const name = document.getElementById(nameId).value;
+    const file = document.getElementById(fileId).files[0];
+    if(!name || !file) return alert("Pilih file PDF dan isi Judul!");
+    
+    const reader = new FileReader();
+    reader.onload = function(e) {
+        const tx = idb.transaction(storeName, "readwrite");
+        tx.objectStore(storeName).add({ name: name, blob: new Blob([e.target.result], {type: 'application/pdf'}), date: new Date().toLocaleDateString() });
+        tx.oncomplete = () => { 
+            alert("Dokumen Tersimpan!"); 
+            document.getElementById(nameId).value = ""; 
+            document.getElementById(fileId).value = ""; 
+            renderFunc(); 
+        };
+    };
+    reader.readAsArrayBuffer(file);
+}
+
+function renderFile(storeName, listId, delFunc) {
+    const list = document.getElementById(listId);
+    list.innerHTML = "<div class='spinner' style='width:20px;height:20px;border-top-color:var(--primary)'></div>";
+    
+    setTimeout(() => {
+        if(!idb) return;
+        const tx = idb.transaction(storeName, "readonly");
+        const req = tx.objectStore(storeName).getAll();
+        
+        req.onsuccess = e => {
+            const res = e.target.result;
+            res.sort((a, b) => b.id - a.id); // Urutkan terbaru
+            list.innerHTML = res.length ? "" : "<div class='empty-state'>Belum ada dokumen.</div>";
+            
+            res.forEach(f => {
+                list.innerHTML += `
+                    <div class="card" style="display:flex; justify-content:space-between; align-items:center">
+                        <div style="overflow:hidden; padding-right:10px">
+                            <div class="card-title" style="margin:0; white-space:nowrap; overflow:hidden; text-overflow:ellipsis">${f.name}</div>
+                            <div class="card-desc">${f.date}</div>
+                        </div>
+                        <div style="display:flex; gap:5px; flex-shrink:0">
+                            <button class="btn btn-secondary" style="margin:0; padding:8px 12px; font-size:12px" onclick="openFile('${storeName}', ${f.id})">Buka</button>
+                            <button class="btn btn-danger" style="margin:0; padding:8px; width:36px" onclick="${delFunc}(${f.id})">✕</button>
+                        </div>
+                    </div>`;
+            });
+        };
+    }, 500);
+}
+
+// --- FIX BUKA FILE (ANTI POPUP DOWNLOAD LAGI) ---
+function openFile(storeName, id) {
+    const tx = idb.transaction(storeName, "readonly");
+    const req = tx.objectStore(storeName).get(id);
+    req.onsuccess = e => {
+        const file = e.target.result;
+        
+        // TRIK: Buat Object URL baru setiap kali diklik
+        const fileURL = URL.createObjectURL(file.blob);
+        
+        // Membuka di tab baru (Target _blank) memaksa Android membuka Viewer
+        // Ini akan tetap mendownload file temp, TAPI tidak akan bertanya "Download Again?"
+        const win = window.open(fileURL, '_blank');
+        if (win) {
+            win.focus();
+        } else {
+            window.location.href = fileURL;
+        }
+        
+        // Bersihkan memori
+        setTimeout(() => URL.revokeObjectURL(fileURL), 60000);
+    };
+}
+
+function delFile(storeName, id, renderFunc) {
+    if(confirm("Hapus dokumen ini?")) {
+        const tx = idb.transaction(storeName, "readwrite");
+        tx.objectStore(storeName).delete(id);
+        tx.oncomplete = () => renderFunc();
+    }
+}
+
+// --- WRAPPERS FOR SOP & ASSET ---
+function saveSOP() { saveFile('sops', 'sop-name', 'sop-file', renderSOP); }
+function renderSOP() { renderFile('sops', 'list-sop', 'delSOP'); }
+function delSOP(id) { delFile('sops', id, renderSOP); }
+
+function saveAsset() { saveFile('assets', 'asset-name', 'asset-file', renderAsset); }
+function renderAsset() { renderFile('assets', 'list-asset', 'delAsset'); }
+function delAsset(id) { delFile('assets', id, renderAsset); }
+
+
+// --- EXPORT / IMPORT (TEXT DATA ONLY) ---
+function saveGIName() { db.giName = document.getElementById('in-gi-name').value; saveData(); }
+
+function exportData() {
+    const str = JSON.stringify(db);
+    const blob = new Blob([str], {type: "application/json"});
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = "PANDU_" + (db.giName || "GI").replace(/\s+/g, '_') + ".json";
+    document.body.appendChild(a); a.click(); a.remove();
+}
+
+function importData(input) {
+    const file = input.files[0];
+    if(!file) return alert("Pilih file .json");
+    const reader = new FileReader();
+    reader.onload = e => {
+        try {
+            const json = JSON.parse(e.target.result);
+            if(json.alarms) {
+                if(confirm("Data ini akan menimpa data Alarm & Kontak di HP. Lanjutkan?")) {
+                    db = json;
+                    saveData();
+                    alert("Data berhasil dimuat!");
+                    location.reload(); 
+                }
+            } else { alert("Format file salah."); }
+        } catch(err) { alert("File rusak."); }
+    };
+    reader.readAsText(file);
+}
+
+function resetApp() {
+    if(confirm("HAPUS SEMUA DATA?")) {
+        localStorage.removeItem('pandu_db_final');
+        const req = indexedDB.deleteDatabase("PanduGI_Final");
+        req.onsuccess = () => location.reload();
+    }
+}
+
+// MODAL UTILS
+function openModal(id) {
+    document.getElementById(id).style.display = 'flex';
+    if(id==='modal-alarm') { document.getElementById('alarm-idx').value=""; document.getElementById('alarm-unit').value=""; document.getElementById('alarm-name').value=""; document.getElementById('alarm-ind').value=""; document.getElementById('alarm-cause').value=""; document.getElementById('alarm-action').value=""; }
+    if(id==='modal-contact') { document.getElementById('contact-idx').value=""; document.getElementById('contact-name').value=""; document.getElementById('contact-num').value=""; }
+}
+function closeModal(id) { document.getElementById(id).style.display = 'none'; }
+</script>
+</body>
+</html>
