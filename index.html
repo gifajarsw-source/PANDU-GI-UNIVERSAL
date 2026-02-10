@@ -3,75 +3,95 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>PANDU-GI | Manual</title>
+    <title>PANDU-GI | Operational App</title>
     <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
     <style>
+        /* TEMA TAMPILAN (Style) */
         :root {
-            /* Warna Tema Baru: Slate Blue (Lebih Tenang & Teknikal) */
-            --primary: #3b82f6; 
-            --primary-dark: #2563eb;
-            --bg: #f1f5f9;
-            --surface: #ffffff;
-            --text-main: #0f172a;
-            --text-sub: #64748b;
-            --danger: #ef4444;
-            --success: #10b981;
-            --border: #e2e8f0;
-            --purple: #8b5cf6;
+            --primary: #2563eb;       /* Biru Royal */
+            --primary-dark: #1e40af;
+            --bg: #f8fafc;            /* Abu sangat muda */
+            --surface: #ffffff;       /* Putih */
+            --text-main: #0f172a;     /* Hitam kebiruan */
+            --text-sub: #64748b;      /* Abu-abu teks */
+            --danger: #ef4444;        /* Merah */
+            --success: #10b981;       /* Hijau */
+            --purple: #8b5cf6;        /* Ungu */
+            --border: #e2e8f0;        /* Garis tipis */
             --shadow: 0 4px 6px -1px rgba(0,0,0,0.05);
         }
-        * { box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
-        body { font-family: 'Plus Jakarta Sans', sans-serif; background-color: var(--bg); color: var(--text-main); margin: 0; padding-bottom: 30px; }
 
-        /* HEADER */
-        .header { background: var(--surface); padding: 16px 20px; position: sticky; top: 0; z-index: 100; display: flex; align-items: center; justify-content: space-between; box-shadow: 0 1px 3px rgba(0,0,0,0.05); border-bottom: 1px solid var(--border); }
+        * { box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
+        body { font-family: 'Plus Jakarta Sans', sans-serif; background-color: var(--bg); color: var(--text-main); margin: 0; padding-bottom: 40px; }
+
+        /* HEADER ATAS */
+        .header { background: var(--surface); padding: 15px 20px; position: sticky; top: 0; z-index: 100; display: flex; align-items: center; justify-content: space-between; box-shadow: 0 1px 3px rgba(0,0,0,0.05); border-bottom: 1px solid var(--border); }
         .app-brand { font-weight: 800; font-size: 18px; color: var(--primary); display: flex; align-items: center; gap: 10px; }
-        .gi-badge { font-size: 11px; background: #eff6ff; color: var(--primary-dark); padding: 3px 8px; border-radius: 6px; font-weight: 700; text-transform: uppercase; border: 1px solid #dbeafe; }
+        .gi-badge { font-size: 10px; background: #eff6ff; color: var(--primary); padding: 4px 8px; border-radius: 6px; font-weight: 700; text-transform: uppercase; border: 1px solid #dbeafe; letter-spacing: 0.5px; }
         .btn-back { display: none; background: #f1f5f9; border: none; padding: 8px 12px; border-radius: 8px; font-weight: 600; font-size: 12px; color: var(--text-sub); }
 
         .container { max-width: 600px; margin: 0 auto; padding: 20px; min-height: 85vh; }
 
-        /* MENU GRID */
-        .menu-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 15px; margin-top: 10px; animation: fadeUp 0.4s ease; }
-        .menu-card { background: var(--surface); border-radius: 16px; padding: 25px 15px; display: flex; flex-direction: column; align-items: center; text-align: center; box-shadow: var(--shadow); border: 1px solid var(--border); cursor: pointer; transition: transform 0.1s; }
-        .menu-card:active { transform: scale(0.96); background: #f8fafc; }
-        .menu-icon-box { width: 54px; height: 54px; border-radius: 16px; display: flex; align-items: center; justify-content: center; margin-bottom: 12px; font-size: 26px; }
+        /* SETUP SCREEN (Tampilan Awal) */
+        #setup-screen { display: none; text-align: center; padding-top: 40px; animation: fadeUp 0.5s ease; }
+        .setup-icon { width: 80px; height: 80px; background: #eff6ff; color: var(--primary); border-radius: 50%; display: flex; align-items: center; justify-content: center; margin: 0 auto 20px; }
         
-        .ic-blue { background: #eff6ff; color: #3b82f6; } .ic-green { background: #ecfdf5; color: #10b981; }
+        /* GRID MENU UTAMA */
+        .menu-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 15px; margin-top: 15px; animation: fadeUp 0.4s ease; }
+        .menu-card { background: var(--surface); border-radius: 16px; padding: 25px 15px; display: flex; flex-direction: column; align-items: center; text-align: center; box-shadow: var(--shadow); border: 1px solid var(--border); cursor: pointer; transition: transform 0.1s; position: relative; overflow: hidden; }
+        .menu-card:active { transform: scale(0.97); background: #f1f5f9; }
+        
+        /* Ikon Menu */
+        .menu-icon-box { width: 54px; height: 54px; border-radius: 14px; display: flex; align-items: center; justify-content: center; margin-bottom: 12px; font-size: 26px; }
+        .ic-blue { background: #eff6ff; color: #2563eb; } .ic-green { background: #ecfdf5; color: #10b981; }
         .ic-orange { background: #fff7ed; color: #f97316; } .ic-purple { background: #f5f3ff; color: #8b5cf6; }
         .ic-gray { background: #f8fafc; color: #475569; }
-        
+
+        /* Menu Bawah (Full Width) */
         .menu-full { grid-column: 1 / -1; flex-direction: row; justify-content: flex-start; padding: 20px; gap: 15px; }
-        .menu-full .menu-icon-box { margin-bottom: 0; width: 45px; height: 45px; font-size: 22px; } .menu-full .menu-text { text-align: left; }
+        .menu-full .menu-icon-box { margin-bottom: 0; width: 40px; height: 40px; font-size: 20px; } 
+        .menu-full .menu-text { text-align: left; }
+        
         .menu-title { font-weight: 700; font-size: 14px; margin-bottom: 2px; color: var(--text-main); }
         .menu-desc { font-size: 11px; color: var(--text-sub); }
 
-        /* SECTIONS & UI */
+        /* HALAMAN ISI (SECTION) */
         .app-section { display: none; animation: slideIn 0.3s cubic-bezier(0.16, 1, 0.3, 1); }
         .app-section.active { display: block; }
+
+        /* KARTU DATA (CARD) */
         .card { background: var(--surface); border-radius: 12px; padding: 16px; margin-bottom: 12px; box-shadow: var(--shadow); border: 1px solid var(--border); position: relative; }
-        .card.trip-alarm { border-left: 5px solid var(--danger); }
-        .badge { display: inline-block; padding: 4px 10px; border-radius: 20px; font-size: 11px; font-weight: 700; background: #eff6ff; color: var(--primary-dark); margin-bottom: 8px; }
-        .card-title { font-size: 15px; font-weight: 700; margin: 0 0 6px 0; }
-        .card-row { display: flex; justify-content: space-between; font-size: 13px; margin-bottom: 4px; border-bottom: 1px dashed #eee; padding-bottom: 4px; }
-        .card-label { color: var(--text-sub); } .card-val { font-weight: 600; text-align: right; max-width: 60%; }
+        .card.trip-alarm { border-left: 5px solid var(--danger); } /* Merah kalau Trip */
+        
+        .badge { display: inline-block; padding: 4px 10px; border-radius: 20px; font-size: 11px; font-weight: 700; background: #eff6ff; color: var(--primary); margin-bottom: 8px; }
+        .card-title { font-size: 15px; font-weight: 700; margin: 0 0 6px 0; color: var(--text-main); }
+        
+        .card-row { display: flex; justify-content: space-between; font-size: 13px; margin-bottom: 5px; border-bottom: 1px dashed #f1f5f9; padding-bottom: 5px; }
+        .card-row:last-child { border-bottom: none; }
+        .card-label { color: var(--text-sub); } 
+        .card-val { font-weight: 600; text-align: right; max-width: 60%; }
         .card-desc { font-size: 13px; color: var(--text-sub); margin: 0; line-height: 1.5; margin-bottom: 6px; }
 
+        /* TOMBOL */
         .btn { border: none; padding: 12px; border-radius: 10px; font-size: 13px; font-weight: 600; cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 6px; width: 100%; transition: 0.2s; margin-bottom: 10px; }
         .btn-primary { background: var(--primary); color: white; }
         .btn-secondary { background: #f1f5f9; color: var(--text-main); border: 1px solid #cbd5e1; }
         .btn-danger { background: #fee2e2; color: var(--danger); }
         .btn-success { background: var(--success); color: white; }
-        .delete-btn { position: absolute; top: 10px; right: 10px; background: none; border: none; color: #cbd5e1; width: 24px; height: 24px; display: flex; align-items: center; justify-content: center; cursor: pointer; font-size: 16px; }
-        .delete-btn:hover { color: var(--danger); }
-
-        input, textarea, select { width: 100%; padding: 12px; border: 1px solid var(--border); border-radius: 8px; font-family: inherit; margin-bottom: 10px; font-size: 14px; }
-        .search-bar { position: sticky; top: 70px; z-index: 90; box-shadow: var(--shadow); background: white; border: 2px solid var(--border); }
-        .search-bar:focus { border-color: var(--primary); outline: none; }
         
+        /* Tombol Hapus Kecil di Pojok Card */
+        .delete-btn { position: absolute; top: 12px; right: 12px; background: none; border: none; color: #cbd5e1; width: 24px; height: 24px; display: flex; align-items: center; justify-content: center; cursor: pointer; font-size: 16px; }
+        .delete-btn:hover { color: var(--danger); background: #fef2f2; border-radius: 50%; }
+
+        /* INPUT FIELD */
+        input, textarea, select { width: 100%; padding: 12px; border: 1px solid var(--border); border-radius: 8px; font-family: inherit; margin-bottom: 10px; font-size: 14px; background: #fff; }
+        .search-bar { position: sticky; top: 75px; z-index: 90; box-shadow: var(--shadow); border: 1px solid var(--primary); }
+        
+        /* POPUP MODAL */
         .overlay { position: fixed; top: 0; left: 0; right: 0; bottom: 0; background: rgba(0,0,0,0.6); backdrop-filter: blur(2px); z-index: 1000; display: none; align-items: center; justify-content: center; padding: 20px; }
         .modal { background: white; width: 100%; max-width: 450px; border-radius: 20px; padding: 24px; max-height: 85vh; overflow-y: auto; animation: slideUp 0.3s ease; }
         
+        /* ANIMASI & LOADING */
         #loader { position: fixed; top:0; left:0; right:0; bottom:0; background: rgba(0,0,0,0.8); z-index: 2000; display: none; flex-direction: column; align-items: center; justify-content: center; color: white; }
         .spinner { width: 40px; height: 40px; border: 4px solid rgba(255,255,255,0.3); border-top-color: white; border-radius: 50%; animation: spin 1s linear infinite; margin-bottom: 15px; }
         
@@ -96,53 +116,54 @@
 
 <div class="container">
 
-    <div id="main-menu">
+    <div id="setup-screen">
+        <div class="setup-icon">
+            <svg xmlns="http://www.w3.org/2000/svg" width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path><circle cx="12" cy="7" r="4"></circle></svg>
+        </div>
+        <h2 style="margin-bottom: 10px;">Selamat Datang, Operator!</h2>
+        <p style="color:var(--text-sub); margin-bottom: 30px;">Aplikasi masih kosong. Silakan beri nama unit tempat Anda bertugas.</p>
+        
+        <div class="card">
+            <h3 class="card-title">Nama Gardu Induk</h3>
+            <input type="text" id="setup-gi-name" placeholder="Contoh: GI Cawang">
+            <button class="btn btn-primary" onclick="finishSetup()">🚀 Mulai Gunakan Aplikasi</button>
+        </div>
+        
+        <p style="margin-top:20px; font-size:12px; color:#94a3b8">Atau jika Anda punya file database dari rekan:</p>
+        <button class="btn btn-secondary" onclick="document.getElementById('import-file-setup').click()">📂 Upload File Database</button>
+        <input type="file" id="import-file-setup" accept=".json" style="display:none" onchange="importData(this)">
+    </div>
+
+    <div id="main-menu" style="display:none;">
         <div style="margin-bottom: 20px;">
-            <h2 style="margin: 0; font-size: 20px;">Selamat Bertugas</h2>
+            <h2 style="margin: 0; font-size: 20px;">Mode Operasi</h2>
             <p style="margin: 4px 0 0 0; color: var(--text-sub); font-size: 13px;">Unit: <b id="gi-name-display">...</b></p>
         </div>
 
         <div class="menu-grid">
             <div class="menu-card" onclick="openSection('section-alarm')">
-                <div class="menu-icon-box ic-blue">
-                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"></path><path d="M13.73 21a2 2 0 0 1-3.46 0"></path></svg>
-                </div>
-                <div class="menu-title">Cari Alarm</div>
-                <div class="menu-desc">Data Annunciator</div>
+                <div class="menu-icon-box ic-blue"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"></path><path d="M13.73 21a2 2 0 0 1-3.46 0"></path></svg></div>
+                <div class="menu-title">Cari Alarm</div><div class="menu-desc">Database Annunciator</div>
             </div>
 
             <div class="menu-card" onclick="openSection('section-asset')">
-                <div class="menu-icon-box ic-purple">
-                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="2" y="3" width="20" height="14" rx="2" ry="2"></rect><line x1="8" y1="21" x2="16" y2="21"></line><line x1="12" y1="17" x2="12" y2="21"></line></svg>
-                </div>
-                <div class="menu-title">Data Peralatan</div>
-                <div class="menu-desc">Spesifikasi Asset</div>
+                <div class="menu-icon-box ic-purple"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="2" y="3" width="20" height="14" rx="2" ry="2"></rect><line x1="8" y1="21" x2="16" y2="21"></line><line x1="12" y1="17" x2="12" y2="21"></line></svg></div>
+                <div class="menu-title">Data Peralatan</div><div class="menu-desc">Spesifikasi Asset</div>
             </div>
 
             <div class="menu-card" onclick="openSection('section-sop')">
-                <div class="menu-icon-box ic-green">
-                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path><polyline points="14 2 14 8 20 8"></polyline><line x1="16" y1="13" x2="8" y2="13"></line><line x1="16" y1="17" x2="8" y2="17"></line><polyline points="10 9 9 9 8 9"></polyline></svg>
-                </div>
-                <div class="menu-title">SOP</div>
-                <div class="menu-desc">Manual Book PDF</div>
+                <div class="menu-icon-box ic-green"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path><polyline points="14 2 14 8 20 8"></polyline><line x1="16" y1="13" x2="8" y2="13"></line><line x1="16" y1="17" x2="8" y2="17"></line><polyline points="10 9 9 9 8 9"></polyline></svg></div>
+                <div class="menu-title">SOP</div><div class="menu-desc">Manual Book PDF</div>
             </div>
 
             <div class="menu-card" onclick="openSection('section-contact')">
-                <div class="menu-icon-box ic-orange">
-                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z"></path></svg>
-                </div>
-                <div class="menu-title">Kontak</div>
-                <div class="menu-desc">Nomor Darurat</div>
+                <div class="menu-icon-box ic-orange"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z"></path></svg></div>
+                <div class="menu-title">Kontak</div><div class="menu-desc">Nomor Darurat</div>
             </div>
 
             <div class="menu-card menu-full" onclick="openSection('section-data')">
-                <div class="menu-icon-box ic-gray" style="margin-bottom:0; width:40px; height:40px; font-size:20px;">
-                    <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="3"></circle><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 0 2.83l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"></path></svg>
-                </div>
-                <div class="menu-text">
-                    <div class="menu-title" style="margin:0">Backup & Share</div>
-                    <div class="menu-desc">Simpan atau kirim data</div>
-                </div>
+                <div class="menu-icon-box ic-gray" style="margin-bottom:0;"><svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="3"></circle><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 0 2.83l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"></path></svg></div>
+                <div class="menu-text"><div class="menu-title" style="margin:0">Backup & Share</div><div class="menu-desc">Download / Upload Database</div></div>
             </div>
         </div>
     </div>
@@ -177,26 +198,26 @@
     <div id="section-data" class="app-section">
         <div class="card">
             <h3 class="card-title">Identitas Gardu Induk</h3>
-            <p class="card-desc">Ubah nama unit agar sesuai lokasi Anda.</p>
+            <p class="card-desc">Nama unit tempat Anda bertugas.</p>
             <input type="text" id="in-gi-name" onchange="saveGIName()" placeholder="Contoh: GI CIKARANG">
         </div>
 
         <div class="card">
-            <h3 class="card-title">Download Database (Kirim Data)</h3>
-            <p class="card-desc">Simpan data yang sudah Anda input menjadi file, lalu kirim ke rekan kerja.</p>
-            <button class="btn btn-primary" onclick="exportData()">⬇️ Download File Database</button>
+            <h3 class="card-title">Kirim Data (Download)</h3>
+            <p class="card-desc">Simpan data yang sudah Anda input jadi file, lalu kirim ke HP rekan lain.</p>
+            <button class="btn btn-primary" onclick="exportData()">⬇️ Download Database</button>
         </div>
 
         <div class="card">
-            <h3 class="card-title">Upload Database (Terima Data)</h3>
-            <p class="card-desc">Jika Anda menerima file database dari rekan, masukkan di sini.</p>
+            <h3 class="card-title">Terima Data (Upload)</h3>
+            <p class="card-desc">Jika rekan mengirim file database, masukkan di sini agar data di HP ini sama.</p>
             <input type="file" id="import-file" accept=".json">
-            <button class="btn btn-secondary" onclick="importData()">📂 Upload File & Pakai</button>
+            <button class="btn btn-secondary" onclick="importData(document.getElementById('import-file'))">📂 Upload & Pakai Data</button>
         </div>
 
         <div class="card" style="background:#fff1f2; border-color:#fecdd3; margin-top:20px;">
             <h3 class="card-title" style="color:var(--danger)">Hapus Data</h3>
-            <button class="btn btn-danger" onclick="resetApp()">⚠️ Bersihkan Aplikasi (Reset)</button>
+            <button class="btn btn-danger" onclick="resetApp()">⚠️ Reset Aplikasi (Hapus Semua)</button>
         </div>
     </div>
 
@@ -211,29 +232,38 @@
 <div id="loader"><div class="spinner"></div><div id="loader-text">Memproses...</div></div>
 
 <script>
-// --- APP STATE (EMPTY START) ---
-let db = {
-    giName: "",
-    alarms: [],
-    assets: [],
-    contacts: []
-};
+// --- 1. INISIALISASI DATA ---
+let db = { giName: "", alarms: [], assets: [], contacts: [] };
 
-// LOAD LOCAL DATA
+// Cek apakah sudah ada data di HP ini?
 const saved = localStorage.getItem('pandu_db_manual');
 if(saved) {
     db = JSON.parse(saved);
+    if(db.giName) {
+        showMenu(); // Sudah ada nama, masuk menu
+    } else {
+        document.getElementById('setup-screen').style.display = 'block'; // Belum ada nama, masuk setup
+    }
 } else {
-    // Start Empty
-    db.giName = "Nama GI Belum Diisi";
-    saveData();
+    document.getElementById('setup-screen').style.display = 'block'; // Aplikasi baru
 }
 
-// SETUP UI
-updateHeader();
-document.getElementById('main-menu').style.display = 'block';
+// --- 2. FUNGSI SETUP AWAL ---
+function finishSetup() {
+    const name = document.getElementById('setup-gi-name').value;
+    if(!name) return alert("Isi nama Gardu Induk dulu!");
+    db.giName = name;
+    saveData();
+    showMenu();
+}
 
-// --- CORE FUNCTIONS ---
+function showMenu() {
+    document.getElementById('setup-screen').style.display = 'none';
+    document.getElementById('main-menu').style.display = 'block';
+    document.querySelector('.header').style.display = 'flex';
+    updateHeader();
+}
+
 function saveData() {
     localStorage.setItem('pandu_db_manual', JSON.stringify(db));
     updateHeader();
@@ -246,6 +276,7 @@ function updateHeader() {
     document.getElementById('in-gi-name').value = db.giName;
 }
 
+// --- 3. NAVIGASI ---
 function goHome() {
     document.querySelectorAll('.app-section').forEach(el => el.classList.remove('active'));
     document.getElementById('main-menu').style.display = 'block';
@@ -256,13 +287,15 @@ function openSection(id) {
     document.getElementById('main-menu').style.display = 'none';
     document.getElementById(id).classList.add('active');
     document.getElementById('btn-back').style.display = 'block';
+    
+    // Refresh Data saat menu dibuka
     if(id === 'section-alarm') renderAlarm();
     if(id === 'section-asset') renderAsset();
     if(id === 'section-contact') renderContact();
     if(id === 'section-sop') renderSOP();
 }
 
-// --- 1. ALARM LOGIC ---
+// --- 4. LOGIKA ALARM ---
 function renderAlarm() {
     const list = document.getElementById('list-alarm');
     const key = document.getElementById('search-alarm').value.toLowerCase();
@@ -274,7 +307,6 @@ function renderAlarm() {
     }
 
     const filtered = db.alarms.filter(x => x.s.toLowerCase().includes(key) || x.a.toLowerCase().includes(key));
-    
     if (filtered.length === 0) {
         list.innerHTML = "<div class='empty-state'>Tidak ditemukan.</div>";
         return;
@@ -294,14 +326,8 @@ function renderAlarm() {
     });
 }
 function saveAlarmItem() {
-    const item = {
-        s: document.getElementById('alarm-unit').value,
-        a: document.getElementById('alarm-name').value,
-        m: document.getElementById('alarm-ind').value,
-        p: document.getElementById('alarm-cause').value,
-        t: document.getElementById('alarm-action').value
-    };
-    if(!item.s || !item.a) return alert("Unit dan Nama Alarm wajib diisi");
+    const item = { s: document.getElementById('alarm-unit').value, a: document.getElementById('alarm-name').value, m: document.getElementById('alarm-ind').value, p: document.getElementById('alarm-cause').value, t: document.getElementById('alarm-action').value };
+    if(!item.s || !item.a) return alert("Isi Unit dan Nama Alarm");
     const idx = document.getElementById('alarm-idx').value;
     if(idx === "") db.alarms.unshift(item); else db.alarms[idx] = item;
     saveData(); closeModal('modal-alarm'); renderAlarm();
@@ -318,7 +344,7 @@ function editAlarm(i) {
 }
 function delAlarm(i) { if(confirm("Hapus alarm ini?")) { db.alarms.splice(i, 1); saveData(); renderAlarm(); } }
 
-// --- 2. ASSET LOGIC ---
+// --- 5. LOGIKA DATA PERALATAN (ASSET) ---
 function renderAsset() {
     const list = document.getElementById('list-asset');
     const key = document.getElementById('search-asset').value.toLowerCase();
@@ -343,15 +369,9 @@ function renderAsset() {
     });
 }
 function saveAssetItem() {
-    const item = {
-        name: document.getElementById('asset-name').value,
-        brand: document.getElementById('asset-brand').value,
-        spec: document.getElementById('asset-spec').value,
-        year: document.getElementById('asset-year').value
-    };
+    const item = { name: document.getElementById('asset-name').value, brand: document.getElementById('asset-brand').value, spec: document.getElementById('asset-spec').value, year: document.getElementById('asset-year').value };
     if(!item.name) return alert("Nama Alat wajib diisi");
     const idx = document.getElementById('asset-idx').value;
-    if(!db.assets) db.assets = [];
     if(idx === "") db.assets.push(item); else db.assets[idx] = item;
     saveData(); closeModal('modal-asset'); renderAsset();
 }
@@ -366,7 +386,75 @@ function editAsset(i) {
 }
 function delAsset(i) { if(confirm("Hapus data alat ini?")) { db.assets.splice(i, 1); saveData(); renderAsset(); } }
 
-// --- 3. CONTACT LOGIC ---
+// --- 6. LOGIKA SOP (DENGAN FIX BUKA FILE) ---
+let idb;
+const request = indexedDB.open("PanduSOP", 1);
+request.onupgradeneeded = e => { e.target.result.createObjectStore("files", { keyPath: "id", autoIncrement: true }); };
+request.onsuccess = e => { idb = e.target.result; };
+
+function saveSOP() {
+    const name = document.getElementById('sop-name').value;
+    const file = document.getElementById('sop-file').files[0];
+    if(!name || !file) return alert("Pilih file PDF dan isi nama dokumen");
+    const reader = new FileReader();
+    reader.onload = function(e) {
+        const tx = idb.transaction("files", "readwrite");
+        tx.objectStore("files").add({ name: name, blob: new Blob([e.target.result], {type: 'application/pdf'}), date: new Date().toLocaleDateString() });
+        tx.oncomplete = () => { alert("SOP Berhasil Disimpan!"); document.getElementById('sop-name').value = ""; document.getElementById('sop-file').value = ""; renderSOP(); };
+    };
+    reader.readAsArrayBuffer(file);
+}
+
+function renderSOP() {
+    const list = document.getElementById('list-sop');
+    list.innerHTML = "<div class='spinner' style='width:20px;height:20px;border-top-color:var(--primary)'></div>";
+    
+    setTimeout(() => {
+        if(!idb) return;
+        const tx = idb.transaction("files", "readonly");
+        const req = tx.objectStore("files").getAll();
+        
+        req.onsuccess = e => {
+            const res = e.target.result;
+            res.sort((a, b) => b.id - a.id);
+            list.innerHTML = res.length ? "" : "<div class='empty-state'>Belum ada SOP tersimpan.</div>";
+            
+            res.forEach(f => {
+                list.innerHTML += `
+                    <div class="card" style="display:flex; justify-content:space-between; align-items:center">
+                        <div style="overflow:hidden; padding-right:10px">
+                            <div class="card-title" style="margin:0; white-space:nowrap; overflow:hidden; text-overflow:ellipsis">${f.name}</div>
+                            <div class="card-desc">${f.date}</div>
+                        </div>
+                        <div style="display:flex; gap:5px; flex-shrink:0">
+                            <button class="btn btn-secondary" style="margin:0; padding:8px 12px; font-size:12px" onclick="openSOP(${f.id})">Buka</button>
+                            <button class="btn btn-danger" style="margin:0; padding:8px; width:36px" onclick="delSOP(${f.id})">✕</button>
+                        </div>
+                    </div>`;
+            });
+        };
+    }, 500);
+}
+
+// TRIK MEMBUKA FILE TANPA POPUP "DOWNLOAD AGAIN"
+function openSOP(id) {
+    const tx = idb.transaction("files", "readonly");
+    const req = tx.objectStore("files").get(id);
+    req.onsuccess = e => {
+        const file = e.target.result;
+        // Buat Link Baru (Unik) setiap kali diklik
+        const fileURL = URL.createObjectURL(file.blob);
+        // Buka di tab baru (System Viewer)
+        const win = window.open(fileURL, '_blank');
+        if (win) win.focus();
+        // Bersihkan memori setelah 1 menit
+        setTimeout(() => URL.revokeObjectURL(fileURL), 60000);
+    };
+}
+
+function delSOP(id) { if(confirm("Hapus dokumen SOP ini?")) { const tx = idb.transaction("files", "readwrite"); tx.objectStore("files").delete(id); tx.oncomplete = () => renderSOP(); } }
+
+// --- 7. LOGIKA KONTAK ---
 function renderContact() {
     const list = document.getElementById('list-contact');
     list.innerHTML = "";
@@ -388,68 +476,7 @@ function saveContactItem() {
 }
 function delContact(i) { if(confirm("Hapus kontak?")) { db.contacts.splice(i, 1); saveData(); renderContact(); } }
 
-// --- 4. SOP LOGIC (INDEXED DB) ---
-let idb;
-const request = indexedDB.open("PanduSOP", 1);
-request.onupgradeneeded = e => { e.target.result.createObjectStore("files", { keyPath: "id", autoIncrement: true }); };
-request.onsuccess = e => { idb = e.target.result; };
-
-function saveSOP() {
-    const name = document.getElementById('sop-name').value;
-    const file = document.getElementById('sop-file').files[0];
-    if(!name || !file) return alert("Pilih file PDF dan isi nama dokumen");
-    const reader = new FileReader();
-    reader.onload = function(e) {
-        const tx = idb.transaction("files", "readwrite");
-        tx.objectStore("files").add({ name: name, blob: new Blob([e.target.result], {type: 'application/pdf'}), date: new Date().toLocaleDateString() });
-        tx.oncomplete = () => { alert("SOP Berhasil Disimpan!"); document.getElementById('sop-name').value = ""; document.getElementById('sop-file').value = ""; renderSOP(); };
-    };
-    reader.readAsArrayBuffer(file);
-}
-// --- FUNGSI RENDER SOP (YANG SUDAH DIPERBAIKI UNTUK ANDROID) ---
-function renderSOP() {
-    const list = document.getElementById('list-sop');
-    list.innerHTML = "<div class='spinner' style='width:20px;height:20px;border-top-color:var(--primary)'></div>";
-    
-    setTimeout(() => {
-        if(!idb) return; // Cegah error jika DB belum siap
-        const tx = idb.transaction("files", "readonly");
-        const req = tx.objectStore("files").getAll();
-        
-        req.onsuccess = e => {
-            const res = e.target.result;
-            
-            // Urutkan dari yang terbaru (opsional)
-            res.sort((a, b) => b.id - a.id);
-
-            list.innerHTML = res.length ? "" : "<div class='empty-state'>Belum ada SOP tersimpan.</div>";
-            
-            res.forEach(f => {
-                const url = URL.createObjectURL(f.blob);
-                
-                // PERBAIKAN DI SINI:
-                // Kita hapus atribut 'download' agar tidak memaksa 'Save As'
-                // Kita tambahkan onclick untuk membuka di tab baru/system viewer
-                
-                list.innerHTML += `
-                    <div class="card" style="display:flex; justify-content:space-between; align-items:center">
-                        <div style="overflow:hidden; padding-right:10px">
-                            <div class="card-title" style="margin:0; white-space:nowrap; overflow:hidden; text-overflow:ellipsis">${f.name}</div>
-                            <div class="card-desc">${f.date}</div>
-                        </div>
-                        <div style="display:flex; gap:5px; flex-shrink:0">
-                            <a href="${url}" target="_blank" class="btn btn-secondary" style="margin:0; padding:8px 12px; font-size:12px">Buka</a>
-                            
-                            <button class="btn btn-danger" style="margin:0; padding:8px; width:36px" onclick="delSOP(${f.id})">✕</button>
-                        </div>
-                    </div>`;
-            });
-        };
-    }, 500);
-}
-function delSOP(id) { if(confirm("Hapus dokumen SOP ini?")) { const tx = idb.transaction("files", "readwrite"); tx.objectStore("files").delete(id); tx.oncomplete = () => renderSOP(); } }
-
-// --- DATA MANAGEMENT (EXPORT/IMPORT) ---
+// --- 8. EXPORT / IMPORT DATA ---
 function saveGIName() { db.giName = document.getElementById('in-gi-name').value; saveData(); }
 
 function exportData() {
@@ -462,20 +489,20 @@ function exportData() {
     document.body.appendChild(a); a.click(); a.remove();
 }
 
-function importData() {
-    const file = document.getElementById('import-file').files[0];
+function importData(input) {
+    const file = input.files[0];
     if(!file) return alert("Pilih file .json dulu");
     const reader = new FileReader();
     reader.onload = e => {
         try {
             const json = JSON.parse(e.target.result);
             if(json.alarms) {
-                if(confirm("PERINGATAN: Data yang Anda upload akan menimpa data yang ada di HP ini. Lanjutkan?")) {
+                if(confirm("Data yang diupload akan menimpa data yang ada di HP ini. Lanjutkan?")) {
                     db = json;
                     saveData();
                     alert("Database berhasil dimuat!");
-                    document.getElementById('import-file').value = "";
-                    location.reload(); // Refresh agar header terupdate
+                    input.value = "";
+                    location.reload(); 
                 }
             } else { alert("Format file salah."); }
         } catch(err) { alert("File rusak."); }
@@ -491,9 +518,10 @@ function resetApp() {
     }
 }
 
-// MODAL UTILS
+// UTILS (Modal)
 function openModal(id) {
     document.getElementById(id).style.display = 'flex';
+    // Clear Input
     if(id==='modal-alarm') { document.getElementById('alarm-idx').value=""; document.getElementById('alarm-unit').value=""; document.getElementById('alarm-name').value=""; document.getElementById('alarm-ind').value=""; document.getElementById('alarm-cause').value=""; document.getElementById('alarm-action').value=""; }
     if(id==='modal-asset') { document.getElementById('asset-idx').value=""; document.getElementById('asset-name').value=""; document.getElementById('asset-brand').value=""; document.getElementById('asset-spec').value=""; document.getElementById('asset-year').value=""; }
     if(id==='modal-contact') { document.getElementById('contact-idx').value=""; document.getElementById('contact-name').value=""; document.getElementById('contact-num').value=""; }
