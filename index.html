@@ -406,18 +406,43 @@ function saveSOP() {
     };
     reader.readAsArrayBuffer(file);
 }
+// --- FUNGSI RENDER SOP (YANG SUDAH DIPERBAIKI UNTUK ANDROID) ---
 function renderSOP() {
     const list = document.getElementById('list-sop');
     list.innerHTML = "<div class='spinner' style='width:20px;height:20px;border-top-color:var(--primary)'></div>";
+    
     setTimeout(() => {
+        if(!idb) return; // Cegah error jika DB belum siap
         const tx = idb.transaction("files", "readonly");
         const req = tx.objectStore("files").getAll();
+        
         req.onsuccess = e => {
             const res = e.target.result;
+            
+            // Urutkan dari yang terbaru (opsional)
+            res.sort((a, b) => b.id - a.id);
+
             list.innerHTML = res.length ? "" : "<div class='empty-state'>Belum ada SOP tersimpan.</div>";
+            
             res.forEach(f => {
                 const url = URL.createObjectURL(f.blob);
-                list.innerHTML += `<div class="card" style="display:flex; justify-content:space-between; align-items:center"><div><div class="card-title" style="margin:0">${f.name}</div><div class="card-desc">${f.date}</div></div><div style="display:flex; gap:5px"><a href="${url}" target="_blank" class="btn btn-secondary" style="margin:0; padding:8px">Buka</a><button class="btn btn-danger" style="margin:0; padding:8px" onclick="delSOP(${f.id})">✕</button></div></div>`;
+                
+                // PERBAIKAN DI SINI:
+                // Kita hapus atribut 'download' agar tidak memaksa 'Save As'
+                // Kita tambahkan onclick untuk membuka di tab baru/system viewer
+                
+                list.innerHTML += `
+                    <div class="card" style="display:flex; justify-content:space-between; align-items:center">
+                        <div style="overflow:hidden; padding-right:10px">
+                            <div class="card-title" style="margin:0; white-space:nowrap; overflow:hidden; text-overflow:ellipsis">${f.name}</div>
+                            <div class="card-desc">${f.date}</div>
+                        </div>
+                        <div style="display:flex; gap:5px; flex-shrink:0">
+                            <a href="${url}" target="_blank" class="btn btn-secondary" style="margin:0; padding:8px 12px; font-size:12px">Buka</a>
+                            
+                            <button class="btn btn-danger" style="margin:0; padding:8px; width:36px" onclick="delSOP(${f.id})">✕</button>
+                        </div>
+                    </div>`;
             });
         };
     }, 500);
